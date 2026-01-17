@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Notes App</title>
+
+<style>
+* {
+  box-sizing: border-box;
+  font-family: system-ui;
+}
+
+body {
+  margin: 0;
+  background: #121212;
+  color: #ffffff;
+}
+
+.app {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  padding: 16px;
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
+  background: #1e1e1e;
+}
+
+.notes {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px;
+}
+
+.note {
+  background: #1f1f1f;
+  padding: 12px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  position: relative;
+}
+
+.delete {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  color: #ff4d4d;
+  font-size: 14px;
+}
+
+.footer {
+  padding: 10px;
+  background: #1e1e1e;
+}
+
+textarea {
+  width: 100%;
+  height: 70px;
+  border-radius: 10px;
+  border: none;
+  padding: 10px;
+  resize: none;
+  font-size: 15px;
+  background: #2a2a2a;
+  color: white;
+}
+
+button {
+  width: 100%;
+  margin-top: 8px;
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  background: #4caf50;
+  color: black;
+  font-size: 16px;
+  font-weight: bold;
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+  <div class="header">Notes</div>
+
+  <div class="notes" id="notes"></div>
+
+  <div class="footer">
+    <textarea id="noteInput" placeholder="Write something..."></textarea>
+    <button onclick="saveNote()">Save</button>
+  </div>
+</div>
+
+<script>
+let notes = JSON.parse(localStorage.getItem("notes")) || [];
+
+function renderNotes() {
+  let n = document.getElementById("notes");
+  n.innerHTML = "";
+
+  notes.forEach((text, i) => {
+    n.innerHTML += `
+      <div class="note">
+        <span class="delete" onclick="deleteNote(${i})">Delete</span>
+        ${text}
+      </div>
+    `;
+  });
+}
+
+function saveNote() {
+  let input = document.getElementById("noteInput");
+  if (input.value.trim() === "") return;
+
+  notes.unshift(input.value);
+  localStorage.setItem("notes", JSON.stringify(notes));
+  input.value = "";
+  renderNotes();
+}
+
+function deleteNote(i) {
+  notes.splice(i, 1);
+  localStorage.setItem("notes", JSON.stringify(notes));
+  renderNotes();
+}
+
+renderNotes();
+</script>
+
+</body>
+</html>
